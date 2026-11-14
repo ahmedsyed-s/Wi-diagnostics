@@ -74,6 +74,8 @@ npm run demo         # dashboard with a synthetic environment, no hardware neede
 > [!TIP]
 > On macOS, run `npm run authorize` once and accept the Location request. Without that permission the system hides SSID and BSSID.
 
+New here? The [usage guide](USAGE.md) walks through installing, running and reading the tool step by step.
+
 With Bun installed globally, `bun run cli` and `bun run web` also work, and `npm link` puts the `wi` command on your PATH. `npm run web:demo` opens the 3D view with the synthetic environment.
 
 ### Desktop app
