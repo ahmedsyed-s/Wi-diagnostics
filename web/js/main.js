@@ -7,6 +7,9 @@ import { LatencyChart, SpectrumChart } from "./charts.js";
 import { GLYPHS } from "./util.js";
 import { t } from "./i18n.js";
 
+// Tells the boot watchdog in index.html that the module graph loaded.
+window.__wiBooted = true;
+
 const $ = (id) => document.getElementById(id);
 const prefs = (() => {
   try {

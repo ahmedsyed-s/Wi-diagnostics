@@ -213,6 +213,50 @@
       </div>
     </div>
 
+    <script>
+      // Boot watchdog (classic script, so it runs even when the module graph fails to load).
+      // If main.js never starts, say why on the boot screen instead of hanging silently.
+      (() => {
+        const CRITICAL = [
+          "/js/main.js", "/js/scene.js", "/js/store.js", "/js/hud.js", "/js/charts.js", "/js/util.js", "/js/i18n.js",
+          "/vendor/three/build/three.module.js", "/vendor/three/build/three.core.js",
+          "/vendor/three/examples/jsm/controls/OrbitControls.js", "/api/snapshot",
+        ];
+        let reported = false;
+        const show = (msg) => {
+          if (reported || window.__wiBooted) return;
+          reported = true;
+          console.error("[WI//DIAG] " + msg);
+          const el = document.getElementById("boot-sub");
+          if (el) {
+            el.textContent = msg;
+            el.classList.add("boot-error");
+          }
+        };
+        const probe = async (lead) => {
+          for (const url of CRITICAL) {
+            const ctl = new AbortController();
+            const timer = setTimeout(() => ctl.abort(), 8000);
+            try {
+              const res = await fetch(url, { cache: "no-store", signal: ctl.signal });
+              await res.arrayBuffer();
+              if (!res.ok) return show(`${lead}: ${url} → HTTP ${res.status}`);
+            } catch (err) {
+              return show(`${lead}: ${url} → ${err.name === "AbortError" ? "timed out" : err.message}`);
+            } finally {
+              clearTimeout(timer);
+            }
+          }
+          show(`${lead}. Open DevTools (F12) → Console for details.`);
+        };
+        addEventListener("error", (e) => {
+          if (window.__wiBooted || reported) return;
+          if (e.target && e.target.tagName === "SCRIPT") probe("web UI failed to load");
+          else if (e.message) show(`startup error: ${e.message}`);
+        }, true);
+        setTimeout(() => window.__wiBooted || reported || probe("web UI did not start"), 12000);
+      })();
+    </script>
     <script type="module" src="/js/main.js"></script>
   </body>
 </html>
