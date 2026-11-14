@@ -371,7 +371,7 @@ export class Tui {
 
   private drawRadar(snap: Snapshot, selected: NetworkView | null, x: number, y: number, w: number, h: number, now: number) {
     const s = this.screen;
-    s.box(x, y, w, h, C.border, "RADAR RF", C.title, "log scale · estimated azimuth", C.faint);
+    s.box(x, y, w, h, C.border, "RF RADAR", C.title, "log scale · estimated azimuth", C.faint);
     const ix = x + 1;
     const iy = y + 1;
     const iw = w - 2;
@@ -558,7 +558,7 @@ export class Tui {
     }
 
     // 6. addressing
-    const addr = [`IP ${l.ip ?? "—"}`, l.dns.length ? `DNS ${l.dns.slice(0, 2).join(", ")}` : null, l.routerMac ? `roteador ${l.routerVendor ?? l.routerMac}` : null]
+    const addr = [`IP ${l.ip ?? "—"}`, l.dns.length ? `DNS ${l.dns.slice(0, 2).join(", ")}` : null, l.routerMac ? `router ${l.routerVendor ?? l.routerMac}` : null]
       .filter(Boolean)
       .join(" · ");
     s.text(ix, row, addr, C.dim, -1, 0, iw);

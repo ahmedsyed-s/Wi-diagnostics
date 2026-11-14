@@ -171,7 +171,7 @@ export class Kalman {
 // ─── Security / PHY classification ────────────────────────────────────────
 
 const SECURITY_LABELS: Record<string, string> = {
-  open: "Aberta",
+  open: "Open",
   wep: "WEP",
   wpa: "WPA",
   wpa2: "WPA2",
@@ -183,7 +183,7 @@ const SECURITY_LABELS: Record<string, string> = {
 };
 
 export function securityLabel(tokens: string[]): string {
-  if (!tokens.length) return "Desconhecida";
+  if (!tokens.length) return "Unknown";
   const order = ["wpa3e", "wpa3t", "wpa3", "wpa2e", "wpa2", "owe", "wpa", "wep", "open"];
   const best = order.find((t) => tokens.includes(t));
   if (best === "wpa2" && tokens.includes("wpa")) return "WPA/WPA2";

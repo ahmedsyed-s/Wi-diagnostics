@@ -41,7 +41,7 @@ export class WiEngine {
   env: EnvironmentModel;
   private opts: EngineOptions;
   private source: ScanSource | null = null;
-  private sourceStatus: SourceStatus = { kind: "demo", label: "iniciando…", redacted: false, note: null };
+  private sourceStatus: SourceStatus = { kind: "demo", label: "starting…", redacted: false, note: null };
   private tracker = new Tracker();
   private layout = new Layout();
   private snapshotListeners = new Set<(s: Snapshot) => void>();
@@ -215,8 +215,8 @@ export class WiEngine {
     }
 
     if (prev) {
-      if (prev.connected && !connected) this.pushEvent("bad", "link", "Wi-Fi desconectado");
-      if (!prev.connected && connected) this.pushEvent("good", "link", "Wi-Fi conectado");
+      if (prev.connected && !connected) this.pushEvent("bad", "link", "Wi-Fi disconnected");
+      if (!prev.connected && connected) this.pushEvent("good", "link", "Wi-Fi connected");
       if (connected && prev.connected) {
         if (link!.bssid && prev.bssid && link!.bssid !== prev.bssid) {
           this.pushEvent("warn", "roam", `Roamed to another AP (${link!.bssid})`);
@@ -234,7 +234,7 @@ export class WiEngine {
     const recent = stats(h.slice(-5)).mean;
     const before = stats(h.slice(-25, -10)).mean;
     if (before - recent >= 10) this.pushEvent("warn", "drop", `Signal drop: ${Math.round(before)} → ${Math.round(recent)} dBm`, undefined, 30000);
-    if (recent - before >= 10) this.pushEvent("good", "gain", `Sinal melhorou: ${Math.round(before)} → ${Math.round(recent)} dBm`, undefined, 30000);
+    if (recent - before >= 10) this.pushEvent("good", "gain", `Signal improved: ${Math.round(before)} → ${Math.round(recent)} dBm`, undefined, 30000);
   }
 
   private async refreshNetInfo() {
@@ -282,7 +282,7 @@ export class WiEngine {
       this.pushEvent("bad", "internet", `Internet not responding (${this.inetPing.target})`);
     } else if (this.internetDown && trailing === 0 && this.inetPing.stat().last !== null) {
       this.internetDown = false;
-      this.pushEvent("good", "internet", "Internet restabelecida");
+      this.pushEvent("good", "internet", "Internet restored");
     }
     if (gw.last !== null && gw.avg !== null && gw.last > Math.max(40, gw.avg * 4)) {
       this.pushEvent("warn", "latency", `Gateway latency spike: ${gw.last.toFixed(0)} ms`, undefined, 30000);

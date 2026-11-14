@@ -119,7 +119,7 @@ export class MacSource implements ScanSource {
 
   private restart(h: SourceHandlers, why: string) {
     if (this.stopped) return;
-    h.onError(`helper CoreWLAN ${why}, reiniciando…`);
+    h.onError(`CoreWLAN helper ${why}, restarting…`);
     if (++this.restarts < 20) setTimeout(() => this.spawn(h), 2000);
   }
 

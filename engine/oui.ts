@@ -81,7 +81,7 @@ export function ouiStatus() {
 
 export async function updateOuiDatabase(): Promise<number> {
   const res = await fetch(IEEE_URL);
-  if (!res.ok) throw new Error(`IEEE registry respondeu ${res.status}`);
+  if (!res.ok) throw new Error(`IEEE registry responded ${res.status}`);
   const text = await res.text();
   mkdirSync(dirname(OUI_CACHE), { recursive: true });
   writeFileSync(OUI_CACHE, text);
