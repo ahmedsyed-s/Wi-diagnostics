@@ -1,33 +1,33 @@
-# Como contribuir
+# How to contribute
 
-Obrigado pelo interesse no WI//DIAG! Estas regras mantêm o projeto organizado e o histórico seguro.
+Thanks for your interest in WI//DIAG! These rules keep the project organized and the history safe.
 
-## Fluxo
+## Workflow
 
-1. Faça um fork e crie uma branch a partir da `main`: `feat/…`, `fix/…` ou `docs/…`.
-2. Mantenha o PR pequeno e focado em uma coisa só.
-3. Abra o PR para a `main` dizendo o que muda e como testar.
-4. A `main` só recebe código por PR. Todo PR precisa da aprovação de um code owner (@felipe-dpmedeiros ou @EnzoHessel) e do build passando. Ninguém faz push direto, nem force push, na `main`.
+1. Fork the repo and create a branch from `main`: `feat/…`, `fix/…` or `docs/…`.
+2. Keep the PR small and focused on one thing.
+3. Open the PR against `main`, saying what changes and how to test it.
+4. `main` only accepts code through PRs. Every PR needs the approval of a code owner (@felipe-dpmedeiros or @EnzoHessel) and a passing build. Nobody pushes directly, or force pushes, to `main`.
 
-## Antes de abrir o PR
+## Before opening the PR
 
 ```bash
 npm install
 npm run typecheck
-npm run demo         # terminal, com o ambiente fictício
-npm run web:demo     # navegador 3D, com o ambiente fictício
+npm run demo         # terminal, with the fictitious environment
+npm run web:demo     # 3D browser, with the fictitious environment
 ```
 
-O GitHub Actions roda o typecheck e gera o app desktop para macOS, Windows e Linux em cada PR.
+GitHub Actions runs the typecheck and builds the desktop app for macOS, Windows and Linux on every PR.
 
-## Dados de rede
+## Network data
 
-Não publique dados reais de Wi-Fi (SSIDs, BSSIDs, IPs ou MACs) em issues, PRs, logs ou prints. Use o modo demo, que gera um ambiente fictício.
+Do not publish real Wi-Fi data (SSIDs, BSSIDs, IPs or MACs) in issues, PRs, logs or screenshots. Use demo mode, which generates a fictitious environment.
 
-## Segurança
+## Security
 
-Vulnerabilidades vão por relato privado, nunca em issue pública: veja o [SECURITY.md](SECURITY.md).
+Vulnerabilities go through a private report, never a public issue: see [SECURITY.md](SECURITY.md).
 
-## Licença
+## License
 
-Ao enviar um PR, você concorda que a contribuição seja distribuída sob a [Apache-2.0](LICENSE), como o resto do projeto.
+By submitting a PR, you agree that your contribution is distributed under [Apache-2.0](LICENSE), like the rest of the project.

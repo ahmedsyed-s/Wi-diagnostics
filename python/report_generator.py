@@ -277,9 +277,9 @@ class ReportGenerator:
             for i, outage in enumerate(outages, 1):
                 outage_data.append([
                     str(i),
-                    outage.get("inicio", "N/A"),
-                    outage.get("fim", "N/A"),
-                    f"{outage.get('duracao_segundos', 0):.0f}",
+                    outage.get("start", "N/A"),
+                    outage.get("end", "N/A"),
+                    f"{outage.get('duration_seconds', 0):.0f}",
                 ])
 
             outage_table = Table(outage_data, colWidths=[15*mm, 45*mm, 45*mm, 25*mm])
@@ -425,9 +425,9 @@ class ReportGenerator:
 
             for outage in outages:
                 row = table.add_row()
-                row.cells[0].text = outage.get("inicio", "N/A")
-                row.cells[1].text = outage.get("fim", "N/A")
-                row.cells[2].text = f"{outage.get('duracao_segundos', 0):.0f}"
+                row.cells[0].text = outage.get("start", "N/A")
+                row.cells[1].text = outage.get("end", "N/A")
+                row.cells[2].text = f"{outage.get('duration_seconds', 0):.0f}"
                 row.cells[3].text = outage.get("message", "")
 
         doc.save(filepath)
@@ -597,9 +597,9 @@ class ReportGenerator:
             for row_idx, outage in enumerate(outages, 2):
                 values = [
                     row_idx - 1,
-                    outage.get("inicio", ""),
-                    outage.get("fim", ""),
-                    outage.get("duracao_segundos", 0),
+                    outage.get("start", ""),
+                    outage.get("end", ""),
+                    outage.get("duration_seconds", 0),
                     outage.get("message", ""),
                 ]
                 for col, value in enumerate(values, 1):

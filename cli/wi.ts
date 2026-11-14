@@ -19,24 +19,24 @@ import { Tui } from "./tui/app";
 import { BAND_COLOR, C, GRADE_COLOR, fmtDist, pad, padL, rssiColor } from "./tui/theme";
 
 const HELP = `
-  WI//DIAG v${VERSION} — visualizador de Wi-Fi
+  WI//DIAG v${VERSION} — Wi-Fi visualizer
 
-  uso
-    wi                      painel ao vivo no terminal
-    wi web                  visualização 3D no navegador
-    wi scan [--json]        varredura única (tabela ou JSON)
-    wi authorize            macOS: libera SSID/BSSID (permissão de Localização)
-    wi oui update           baixa a base de fabricantes da IEEE
+  usage
+    wi                      live dashboard in the terminal
+    wi web                  3D view in the browser
+    wi scan [--json]        single scan (table or JSON)
+    wi authorize            macOS: unlock SSID/BSSID (Location permission)
+    wi oui update           download the IEEE vendor database
 
-  opções
-    --demo                  ambiente sintético (sem hardware)
-    --web                   (painel) também sobe a visualização 3D
-    --port <n>              porta HTTP da web (padrão 3333)
-    --no-open               não abre o navegador
-    --env <modelo>          ${ENV_ORDER.join(" | ")} (padrão residential)
-    --interval <s>          intervalo entre varreduras (padrão 2)
-    --iface <nome>          interface Wi-Fi (Linux/Windows)
-    --syslog [porta]        escuta syslog UDP do roteador (padrão 1514)
+  options
+    --demo                  synthetic environment (no hardware)
+    --web                   (dashboard) also start the 3D view
+    --port <n>              HTTP port for the web view (default 3333)
+    --no-open               don't open the browser
+    --env <model>           ${ENV_ORDER.join(" | ")} (default residential)
+    --interval <s>          interval between scans (default 2)
+    --iface <name>          Wi-Fi interface (Linux/Windows)
+    --syslog [port]         listen for UDP syslog from the router (default 1514)
 `;
 
 function parseArgs(argv: string[]) {
@@ -77,7 +77,7 @@ function openBrowser(url: string) {
 function makeEngine(log: (msg: string) => void) {
   const env = (typeof flags.env === "string" ? flags.env : "residential") as EnvironmentPreset;
   if (!ENV_ORDER.includes(env)) {
-    console.error(`modelo de ambiente inválido: ${env} (use ${ENV_ORDER.join(", ")})`);
+    console.error(`invalid environment model: ${env} (use ${ENV_ORDER.join(", ")})`);
     process.exit(1);
   }
   return new WiEngine({
@@ -106,9 +106,9 @@ function waitForScan(engine: WiEngine, timeoutMs = 25000): Promise<Snapshot> {
 
 function printTable(s: Snapshot) {
   const out: string[] = [];
-  out.push(rgb(C.title, `\n  WI//DIAG · ${s.source.label} · ${s.networks.length} rádios\n`));
+  out.push(rgb(C.title, `\n  WI//DIAG · ${s.source.label} · ${s.networks.length} radios\n`));
   if (s.source.note) out.push(rgb(C.warn, `  ⚠ ${s.source.note}\n`));
-  out.push(rgb(C.dim, `  ${pad("REDE", 24)}${pad("BANDA", 7)}${pad("CH", 5)}${pad("LARG", 6)}${padL("RSSI", 5)}  ${pad("DIST", 20)}${pad("SEG", 5)}${pad("GERAÇÃO", 10)}FABRICANTE`));
+  out.push(rgb(C.dim, `  ${pad("NETWORK", 24)}${pad("BAND", 7)}${pad("CH", 5)}${pad("WIDTH", 6)}${padL("RSSI", 5)}  ${pad("DIST", 20)}${pad("SEC", 5)}${pad("GEN", 10)}VENDOR`));
   for (const n of s.networks) {
     out.push(
       "  " +
@@ -142,25 +142,25 @@ async function main() {
 
   if (command === "authorize") {
     if (process.platform !== "darwin") {
-      console.log("Só é necessário no macOS — Linux e Windows já expõem SSID/BSSID.");
+      console.log("Only needed on macOS — Linux and Windows already expose SSID/BSSID.");
       return;
     }
-    console.log(rgb(C.title, "Abrindo o helper do scanner — aceite o pedido de Localização do macOS."));
-    console.log(rgb(C.dim, "Se nada aparecer: Ajustes do Sistema → Privacidade e Segurança → Serviços de Localização → WiScan."));
+    console.log(rgb(C.title, "Opening the scanner helper — accept the macOS Location request."));
+    console.log(rgb(C.dim, "If nothing appears: System Settings → Privacy & Security → Location Services → WiScan."));
     const status = await authorizeHelper((m) => console.log(rgb(C.dim, m)));
     const ok = status === "authorized";
-    console.log(ok ? rgb(C.good, "✓ autorizado — SSIDs e BSSIDs serão exibidos.") : rgb(C.warn, `status: ${status}`));
+    console.log(ok ? rgb(C.good, "✓ authorized — SSIDs and BSSIDs will be shown.") : rgb(C.warn, `status: ${status}`));
     return;
   }
 
   if (command === "oui") {
     if (positional[1] === "update") {
-      console.log("baixando registro OUI da IEEE…");
+      console.log("downloading the IEEE OUI registry…");
       const n = await updateOuiDatabase();
-      console.log(rgb(C.good, `✓ ${n} fabricantes carregados`));
+      console.log(rgb(C.good, `✓ ${n} vendors loaded`));
     } else {
       const st = ouiStatus();
-      console.log(st.entries ? `${st.entries} fabricantes (${st.source})` : "nenhuma base OUI local — rode `wi oui update`");
+      console.log(st.entries ? `${st.entries} vendors (${st.source})` : "no local OUI database — run `wi oui update`");
     }
     return;
   }
@@ -180,11 +180,11 @@ async function main() {
     await engine.start();
     const server = startServer(engine, { port: Number(flags.port) || 3333 });
     console.log(rgb(C.title, `\n  WI//DIAG 3D ▸ ${server.url}`));
-    console.log(rgb(C.dim, `  fonte: ${engine.current().source.label} · Ctrl+C para sair\n`));
+    console.log(rgb(C.dim, `  source: ${engine.current().source.label} · Ctrl+C to quit\n`));
     if (!flags["no-open"]) openBrowser(server.url);
     engine.onEvent((e) => {
       const color = e.level === "bad" ? C.bad : e.level === "warn" ? C.warn : e.level === "good" ? C.good : C.dim;
-      console.log(rgb(color, `  ${new Date(e.t).toLocaleTimeString("pt-BR")}  ${e.message}`));
+      console.log(rgb(color, `  ${new Date(e.t).toLocaleTimeString("en-GB")}  ${e.message}`));
     });
     const shutdown = () => {
       server.stop();

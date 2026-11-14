@@ -192,7 +192,7 @@ class RFSpaceObservatory:
         print(f"[observatory] 📡 Log listener: UDP port {self.log_listener.port}")
         print(f"[observatory] 🛰️ WiFi scanning: every {self.scanner._scan_interval}s")
         print(f"[observatory] 🔎 Scan source: {self.network_config.scan_interface or 'auto'}")
-        print("[observatory] 💻 Visualização 3D: bun run web  ·  painel no terminal: bun run cli")
+        print("[observatory] 💻 3D view: bun run web  ·  terminal dashboard: bun run cli")
         print()
         print("[observatory] Press Ctrl+C to stop and generate report...")
         print()
@@ -241,7 +241,7 @@ class RFSpaceObservatory:
                 "access_points": self._latest_data.get("access_points", []),
                 "scan_stats": self._latest_data.get("scan_stats", {}),
                 "log_stats": self._latest_data.get("log_stats", {}),
-                "outages": self.log_listener.get_quedas(),
+                "outages": self.log_listener.get_outages(),
                 "network_config": self.network_config.get_ifconfig_summary(),
                 "positions": self._latest_data.get("positions", {}),
             }
@@ -264,7 +264,7 @@ class RFSpaceObservatory:
                 "access_points": self._latest_data.get("access_points", []),
                 "scan_stats": self._latest_data.get("scan_stats", {}),
                 "log_stats": self._latest_data.get("log_stats", {}),
-                "outages": self.log_listener.get_quedas(),
+                "outages": self.log_listener.get_outages(),
                 "network_config": self.network_config.get_ifconfig_summary(),
                 "positions": self._latest_data.get("positions", {}),
             }

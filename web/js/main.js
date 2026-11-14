@@ -5,7 +5,7 @@ import { RFScene } from "./scene.js";
 import { Hud } from "./hud.js";
 import { LatencyChart, SpectrumChart } from "./charts.js";
 import { GLYPHS } from "./util.js";
-import { setLang, t } from "./i18n.js";
+import { t } from "./i18n.js";
 
 const $ = (id) => document.getElementById(id);
 const prefs = (() => {
@@ -250,7 +250,6 @@ $("env").addEventListener("change", (e) => {
   hud.toast(t("toast.envModel", { v: e.target.selectedOptions[0].textContent }));
 });
 $("env").addEventListener("blur", () => syncEnv());
-$("lang").addEventListener("change", (e) => setLang(e.target.value));
 
 // Menus
 document.querySelectorAll(".menu").forEach((menu) => {
@@ -310,7 +309,7 @@ document.querySelector("#export-menu .menu-pop").addEventListener("click", async
   const kind = b.dataset.export;
   const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
   if (kind === "png") return download(`wi-diag-${stamp}.png`, scene.capture());
-  if (kind === "csv") return download(`wi-redes-${stamp}.csv`, "/api/networks.csv");
+  if (kind === "csv") return download(`wi-networks-${stamp}.csv`, "/api/networks.csv");
   if (kind === "json") {
     const blob = new Blob([JSON.stringify(store.snapshot, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);

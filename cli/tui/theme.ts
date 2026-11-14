@@ -95,7 +95,7 @@ export function ago(t: number): string {
 }
 
 export function clock(t = Date.now()): string {
-  return new Date(t).toLocaleTimeString("pt-BR", { hour12: false });
+  return new Date(t).toLocaleTimeString("en-GB", { hour12: false });
 }
 
 /** Fits `s` into `n` terminal cells (wide glyphs count 2); the result is control-free. */

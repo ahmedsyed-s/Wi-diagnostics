@@ -1,16 +1,16 @@
-name: Ideia
-description: Sugira uma melhoria ou um recurso novo
+name: Idea
+description: Suggest an improvement or a new feature
 labels: [enhancement]
 body:
   - type: textarea
     id: problem
     attributes:
-      label: Que problema isso resolve?
+      label: What problem does this solve?
     validations:
       required: true
   - type: textarea
     id: idea
     attributes:
-      label: Como você imagina
+      label: How you imagine it
     validations:
       required: true

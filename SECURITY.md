@@ -1,7 +1,7 @@
-# Segurança
+# Security
 
-Encontrou uma vulnerabilidade? Não abra uma issue pública.
+Found a vulnerability? Do not open a public issue.
 
-Use **Security → Report a vulnerability** neste repositório: o relato fica privado entre você e os mantenedores (@felipe-dpmedeiros e @EnzoHessel), e a resposta vem por lá.
+Use **Security → Report a vulnerability** in this repository: the report stays private between you and the maintainers (@felipe-dpmedeiros and @EnzoHessel), and the reply comes through there.
 
-Inclua o que for preciso para reproduzir o problema, sem SSIDs, BSSIDs ou IPs reais.
+Include whatever is needed to reproduce the problem, without real SSIDs, BSSIDs or IPs.

@@ -1,7 +1,7 @@
-## O que muda
+## What changes
 
-## Como testar
+## How to test
 
-- [ ] `npm run typecheck` passa
-- [ ] testei com `npm run demo` ou `npm run web:demo`
-- [ ] nenhum dado real de rede (SSID, BSSID, IP ou MAC) em código, logs ou prints
+- [ ] `npm run typecheck` passes
+- [ ] I tested with `npm run demo` or `npm run web:demo`
+- [ ] no real network data (SSID, BSSID, IP or MAC) in code, logs or screenshots

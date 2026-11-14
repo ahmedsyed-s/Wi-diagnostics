@@ -1,225 +1,227 @@
 <div align="center">
 
-<p><img src=".github/media/banner.svg" width="100%" alt="WI//DIAG: Veja o invisível. Radar no terminal e espaço RF em 3D no navegador."></p>
+<p><img src=".github/media/banner.svg" width="100%" alt="WI//DIAG: See the invisible. A radar in the terminal and RF space in 3D in the browser."></p>
 
 <p>
   <img alt="Engine: Bun" src="https://img.shields.io/badge/engine-Bun-39FF8F?style=for-the-badge&logo=bun&logoColor=white&labelColor=0b1410">
   <img alt="3D: Three.js" src="https://img.shields.io/badge/3D-Three.js-39FF8F?style=for-the-badge&logo=threedotjs&logoColor=white&labelColor=0b1410">
   <img alt="TypeScript strict" src="https://img.shields.io/badge/TypeScript-strict-39FF8F?style=for-the-badge&logo=typescript&logoColor=white&labelColor=0b1410">
-  <img alt="macOS, Linux e Windows" src="https://img.shields.io/badge/plataformas-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-22E6FF?style=for-the-badge&labelColor=0b1410">
-  <a href="LICENSE"><img alt="Licença Apache-2.0" src="https://img.shields.io/badge/licen%C3%A7a-Apache--2.0-39FF8F?style=for-the-badge&labelColor=0b1410"></a>
+  <img alt="macOS, Linux and Windows" src="https://img.shields.io/badge/platforms-macOS%20%C2%B7%20Linux%20%C2%B7%20Windows-22E6FF?style=for-the-badge&labelColor=0b1410">
+  <a href="LICENSE"><img alt="License Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-39FF8F?style=for-the-badge&labelColor=0b1410"></a>
 </p>
 
 <br>
 
-**WI//DIAG** mostra o Wi-Fi que te cerca. Cada rede vira um ponto no radar, na distância estimada pelo sinal,<br>
-com o canal que ocupa, quem interfere em quem, a nota de segurança e o canal que você deveria usar.<br>
-Tudo ao vivo, em duas interfaces sobre o mesmo engine em Bun.
+**WI//DIAG** shows the Wi-Fi around you. Every network becomes a point on the radar, at the distance estimated from its signal,<br>
+with the channel it occupies, who interferes with whom, its security grade and the channel you should be using.<br>
+All live, in two interfaces on top of the same Bun engine.
 
-[Começar](#começar) · [O que ele mostra](#o-que-ele-mostra) · [Atalhos](#atalhos) · [Como funciona](#como-funciona) · [Plataformas](#plataformas) · [Privacidade](#privacidade)
+[Getting started](#getting-started) · [What it shows](#what-it-shows) · [Shortcuts](#shortcuts) · [How it works](#how-it-works) · [Platforms](#platforms) · [Privacy](#privacy)
 
 </div>
 
 <br>
 
 <p align="center">
-  <img src=".github/media/web.jpg" width="100%" alt="Visualização 3D no navegador: chuva digital, piso-radar, as redes como nós luminosos, o espectro embaixo e o inspetor aberto numa impressora a cerca de 7,8 m">
+  <img src=".github/media/web.jpg" width="100%" alt="3D view in the browser: digital rain, radar floor, networks as glowing nodes, the spectrum below and the inspector open on a printer about 7.8 m away">
   <br>
-  <sub><code>npm run web</code>: o espaço RF ao redor do computador. O inspetor está aberto na impressora que divide o canal 6 com o seu roteador.</sub>
+  <sub><code>npm run web</code>: the RF space around the computer. The inspector is open on the printer that shares channel 6 with your router.</sub>
 </p>
 
 <p align="center">
-  <img src=".github/media/terminal.gif" width="100%" alt="Painel no terminal: o comando wi, a chuva de boot e o painel com radar de varredura, link, tabela de redes, espectro e eventos">
+  <img src=".github/media/terminal.gif" width="100%" alt="Terminal dashboard: the wi command, the boot rain and the dashboard with sweep radar, link, network table, spectrum and events">
   <br>
-  <sub><code>npm run cli</code>: o mesmo engine no terminal. Radar de varredura, link, redes, espectro e eventos em tela cheia.</sub>
+  <sub><code>npm run cli</code>: the same engine in the terminal. Sweep radar, link, networks, spectrum and events in full screen.</sub>
 </p>
 
 <br>
 
-## O que ele mostra
+## What it shows
 
 <table>
   <tr>
-    <td width="33%"><img src=".github/media/field.jpg" alt="Câmera de radar vista de cima, com as curvas de nível do campo de sinal ao redor de cada rede"></td>
-    <td width="33%"><img src=".github/media/security.jpg" alt="Inspetor de uma rede aberta com nota F de segurança e distância estimada de 13 m"></td>
-    <td width="33%"><img src=".github/media/cinema.jpg" alt="Modo cinema: só o espaço RF, sem painéis"></td>
+    <td width="33%"><img src=".github/media/field.jpg" alt="Radar camera seen from above, with the contour lines of the signal field around each network"></td>
+    <td width="33%"><img src=".github/media/security.jpg" alt="Inspector of an open network with security grade F and an estimated distance of 13 m"></td>
+    <td width="33%"><img src=".github/media/cinema.jpg" alt="Cinema mode: only the RF space, no panels"></td>
   </tr>
   <tr>
-    <td valign="top"><b>Campo RF</b><br><sub>A cobertura prevista de cada rede desenhada no piso, com curvas de −50 a −80 dBm. Tecla <code>F</code>.</sub></td>
-    <td valign="top"><b>Inspetor</b><br><sub>Distância provável com faixa de incerteza, nota de segurança de A a F, fabricante, canal e histórico do sinal.</sub></td>
-    <td valign="top"><b>Modo cinema</b><br><sub>Só o espaço RF, sem painéis, para deixar aberto numa tela. Tecla <code>H</code>.</sub></td>
+    <td valign="top"><b>RF field</b><br><sub>The predicted coverage of each network drawn on the floor, with contours from −50 to −80 dBm. Key <code>F</code>.</sub></td>
+    <td valign="top"><b>Inspector</b><br><sub>Probable distance with an uncertainty range, security grade from A to F, vendor, channel and signal history.</sub></td>
+    <td valign="top"><b>Cinema mode</b><br><sub>Only the RF space, no panels, to leave open on a screen. Key <code>H</code>.</sub></td>
   </tr>
 </table>
 
-| Camada | Dados |
+| Layer | Data |
 | --- | --- |
-| Rádio | RSSI filtrado (Kalman), pico, desvio, ruído e SNR, canal, largura, faixa de espectro ocupada, DFS, PHY, geração Wi-Fi, taxa PHY teórica, intervalo de beacon |
-| Segurança | Protocolo (de rede aberta a WPA3/OWE) e nota de A a F |
-| Identidade | SSID, BSSID, fabricante (OUI), MAC aleatório, rádios do mesmo AP agrupados |
-| Espaço | Distância estimada com faixa de incerteza, azimute provável e altura |
-| Espectro | Ocupação por canal, interferência co-canal e parcial, SIR, melhor canal por banda |
-| Link | RSSI e SNR ao vivo, taxa TX, MCS, IP/IPv6, gateway, MAC e fabricante do roteador, DNS |
-| Rede | Latência, jitter e perda até o gateway e até a internet (1.1.1.1), diagnóstico do link |
-| Eventos | Novas redes, redes perdidas, roaming, troca de canal, queda de sinal, picos de latência, internet fora do ar, syslog do roteador |
+| Radio | Filtered RSSI (Kalman), peak, deviation, noise and SNR, channel, width, occupied spectrum range, DFS, PHY, Wi-Fi generation, theoretical PHY rate, beacon interval |
+| Security | Protocol (from open network to WPA3/OWE) and grade from A to F |
+| Identity | SSID, BSSID, vendor (OUI), randomized MAC, radios of the same AP grouped |
+| Space | Estimated distance with uncertainty range, probable azimuth and height |
+| Spectrum | Occupancy per channel, co-channel and partial interference, SIR, best channel per band |
+| Link | Live RSSI and SNR, TX rate, MCS, IP/IPv6, gateway, router MAC and vendor, DNS |
+| Network | Latency, jitter and loss to the gateway and to the internet (1.1.1.1), link diagnosis |
+| Events | New networks, lost networks, roaming, channel changes, signal drops, latency spikes, internet down, router syslog |
 
-## Começar
+## Getting started
 
 ```bash
-npm install          # instala o Bun (local), o Three.js e o resto
-npm run cli          # painel no terminal
-npm run web          # visualização 3D no navegador (http://127.0.0.1:3333)
-npm run demo         # painel com um ambiente sintético, sem hardware
+npm install          # installs Bun (locally), Three.js and the rest
+npm run cli          # terminal dashboard
+npm run web          # 3D view in the browser (http://127.0.0.1:3333)
+npm run demo         # dashboard with a synthetic environment, no hardware needed
 ```
 
 > [!TIP]
-> No macOS, rode `npm run authorize` uma vez e aceite o pedido de Localização. Sem essa permissão o sistema esconde SSID e BSSID.
+> On macOS, run `npm run authorize` once and accept the Location request. Without that permission the system hides SSID and BSSID.
 
-Com o Bun instalado globalmente, `bun run cli` e `bun run web` também funcionam, e `npm link` deixa o comando `wi` no PATH. `npm run web:demo` abre a visualização 3D com o ambiente sintético.
+New here? The [usage guide](USAGE.md) walks through installing, running and reading the tool step by step.
 
-### App desktop
+With Bun installed globally, `bun run cli` and `bun run web` also work, and `npm link` puts the `wi` command on your PATH. `npm run web:demo` opens the 3D view with the synthetic environment.
 
-O GitHub Actions gera o app para macOS (Apple Silicon), Windows e Linux em cada PR e em cada versão, e as versões publicadas ficam em [Releases](https://github.com/Dellacarmo/Wi-diagnostics/releases). Para gerar o instalador do seu sistema, rode `npm run build`.
+### Desktop app
 
-Os instaladores ainda não têm assinatura de desenvolvedor. No macOS, libere o app em Ajustes do Sistema → Privacidade e Segurança → "Abrir Mesmo Assim". No Windows, clique em "Mais informações" → "Executar mesmo assim".
+GitHub Actions builds the app for macOS (Apple Silicon), Windows and Linux on every PR and every release, and published versions are in [Releases](https://github.com/Dellacarmo/Wi-diagnostics/releases). To build the installer for your own system, run `npm run build`.
 
-## Atalhos
+The installers are not yet signed by a developer. On macOS, allow the app in System Settings → Privacy & Security → "Open Anyway". On Windows, click "More info" → "Run anyway".
+
+## Shortcuts
 
 <table>
-<tr><th>Terminal</th><th>Navegador 3D</th></tr>
+<tr><th>Terminal</th><th>3D browser</th></tr>
 <tr><td valign="top">
 
-| Tecla | Ação |
+| Key | Action |
 | --- | --- |
-| `↑` `↓` ou `j` `k` | seleciona uma rede |
-| `PgUp` `PgDn` · `g` `G` | pula 10 · vai ao início ou ao fim |
-| `⏎` ou espaço | abre ou fecha os detalhes |
-| `f` | filtra por banda |
-| `s` | muda a ordenação |
-| `b` | banda do espectro |
-| `e` | modelo de ambiente |
-| `w` | abre a visualização 3D |
-| `m` | chuva digital |
-| `p` | pausa |
-| `q` | sai |
+| `↑` `↓` or `j` `k` | select a network |
+| `PgUp` `PgDn` · `g` `G` | jump 10 · go to start or end |
+| `⏎` or space | open or close details |
+| `f` | filter by band |
+| `s` | change sort order |
+| `b` | spectrum band |
+| `e` | environment model |
+| `w` | open the 3D view |
+| `m` | digital rain |
+| `p` | pause |
+| `q` | quit |
 
 </td><td valign="top">
 
-| Tecla | Ação |
+| Key | Action |
 | --- | --- |
-| `1` `2` `3` | câmera: órbita, radar, solo |
-| `H` | modo cinema |
-| `F` | campo RF |
-| `R` · `B` · `L` | chuva · feixes · rótulos |
-| `N` · `D` | recolhe a lista · o painel de baixo |
-| `/` | busca |
-| `↑` `↓` | navega entre as redes |
-| `⏎` | centraliza a rede escolhida |
-| `Esc` | limpa a seleção |
-| espaço | auto-rotação |
+| `1` `2` `3` | camera: orbit, radar, ground |
+| `H` | cinema mode |
+| `F` | RF field |
+| `R` · `B` · `L` | rain · beams · labels |
+| `N` · `D` | collapse the list · the bottom panel |
+| `/` | search |
+| `↑` `↓` | move between networks |
+| `⏎` | center the chosen network |
+| `Esc` | clear selection |
+| space | auto-rotate |
 
 </td></tr>
 </table>
 
-No navegador, clique num nó, numa linha da lista ou numa curva do espectro para abrir o inspetor. O menu de exportação gera PNG da cena, CSV e JSON e, com as dependências Python instaladas, relatórios em PDF, DOCX e XLSX.
+In the browser, click a node, a row in the list or a curve in the spectrum to open the inspector. The export menu produces a PNG of the scene, CSV and JSON and, with the Python dependencies installed, PDF, DOCX and XLSX reports.
 
-## Como funciona
+## How it works
 
 ```mermaid
 flowchart LR
-    subgraph fontes [Fontes de varredura]
+    subgraph sources [Scan sources]
         direction LR
         mac["macOS · CoreWLAN"]
         lin["Linux · nmcli + iw"]
         win["Windows · netsh wlan"]
-        demo["Demo · sintético"]
+        demo["Demo · synthetic"]
     end
-    fontes --> engine(["engine em Bun<br/>Kalman · modelo RF · posição · espectro · ping"])
-    engine -- snapshot por segundo --> tui["Terminal<br/>wi"]
-    engine -- WebSocket --> web["Navegador 3D<br/>Three.js"]
+    sources --> engine(["Bun engine<br/>Kalman · RF model · position · spectrum · ping"])
+    engine -- snapshot every second --> tui["Terminal<br/>wi"]
+    engine -- WebSocket --> web["3D browser<br/>Three.js"]
 ```
 
-O engine varre o ar a cada 2 s, filtra o RSSI de cada rádio, mantém a identidade das redes entre varreduras (mesmo quando o sistema esconde o BSSID), estima posições, mede o espectro e a latência e publica um snapshot por segundo. O terminal desenha esse snapshot; o servidor HTTP o entrega à cena 3D por WebSocket.
+The engine scans the air every 2 s, filters the RSSI of each radio, keeps network identity across scans (even when the system hides the BSSID), estimates positions, measures spectrum and latency and publishes a snapshot every second. The terminal draws that snapshot; the HTTP server delivers it to the 3D scene over WebSocket.
 
-### Como a posição é estimada
+### How position is estimated
 
-Com um único receptor parado, só a **distância** é observável. Ela vem do RSSI pelo modelo log-distância, com referência a 1 m por banda e expoente de perda por ambiente (`--env open|residential|office|dense`, alterável ao vivo com `e`). A faixa mostrada combina o sombreamento típico do ambiente com a variação medida do sinal.
+With a single stationary receiver, only **distance** is observable. It comes from RSSI via the log-distance model, with a 1 m reference per band and a path-loss exponent per environment (`--env open|residential|office|dense`, changeable live with `e`). The range shown combines the typical shadowing of the environment with the measured variation of the signal.
 
-O **azimute** não é observável com uma antena. Ele é inferido assim: rádios do mesmo AP compartilham a direção, redes cujo sinal oscila junto (correlação de Pearson) ficam próximas, e uma semente determinística mantém o layout estável. Por isso a interface mostra o anel de distância e um setor provável, não um ponto exato.
+**Azimuth** is not observable with one antenna. It is inferred like this: radios of the same AP share a direction, networks whose signal fluctuates together (Pearson correlation) are placed close to each other, and a deterministic seed keeps the layout stable. That is why the interface shows a distance ring and a probable sector, not an exact point.
 
-O **campo RF** no piso 3D é a previsão do modelo a partir dessas posições estimadas, com curvas de nível em −50, −60, −70 e −80 dBm. Com uma rede selecionada, ele mostra só a cobertura dela.
+The **RF field** on the 3D floor is the model's prediction from those estimated positions, with contour lines at −50, −60, −70 and −80 dBm. With a network selected, it shows only that network's coverage.
 
-## Plataformas
+## Platforms
 
-| Sistema | Fonte | Observações |
+| System | Source | Notes |
 | --- | --- | --- |
-| macOS | Helper Swift/CoreWLAN, compilado no primeiro uso (precisa das Command Line Tools) | Sem permissão de Localização o macOS esconde SSID e BSSID: rode `npm run authorize`. Sem `swiftc`, cai para o `system_profiler`, bem mais limitado. |
-| Linux | `nmcli` (NetworkManager) e `iw` para o link | SSID e BSSID completos |
-| Windows | `netsh wlan` | Saída em inglês ou português |
+| macOS | Swift/CoreWLAN helper, compiled on first use (needs the Command Line Tools) | Without Location permission macOS hides SSID and BSSID: run `npm run authorize`. Without `swiftc`, it falls back to `system_profiler`, which is much more limited. |
+| Linux | `nmcli` (NetworkManager) and `iw` for the link | Full SSID and BSSID |
+| Windows | `netsh wlan` | Output in English or Portuguese |
 
-Sem nenhuma fonte disponível, o engine entra no modo demo e avisa na interface.
+With no source available, the engine enters demo mode and says so in the interface.
 
-## Privacidade
+## Privacy
 
-- Tudo roda na sua máquina. O servidor da visualização 3D escuta só em `127.0.0.1` e recusa origens que não sejam locais.
-- O que sai para a rede: o ping até o gateway e até `1.1.1.1`, para medir a latência; a fonte JetBrains Mono, que a interface 3D carrega do Google Fonts; e a base de fabricantes da IEEE, só quando você roda `wi oui update`.
-- Com `--syslog`, o engine também escuta UDP na porta 1514 para receber o log do roteador.
-- As imagens deste README vêm do modo demo: redes, endereços e BSSIDs são fictícios.
+- Everything runs on your machine. The 3D view server listens only on `127.0.0.1` and rejects non-local origins.
+- What goes out to the network: the ping to the gateway and to `1.1.1.1`, to measure latency; the JetBrains Mono font, which the 3D interface loads from Google Fonts; and the IEEE vendor database, only when you run `wi oui update`.
+- With `--syslog`, the engine also listens on UDP port 1514 to receive the router's log.
+- The images in this README come from demo mode: networks, addresses and BSSIDs are fictitious.
 
-## Linha de comando
+## Command line
 
 ```text
-wi                      painel ao vivo no terminal
-wi web                  visualização 3D no navegador
-wi scan [--json]        varredura única (tabela ou JSON)
-wi authorize            macOS: libera SSID e BSSID (permissão de Localização)
-wi oui update           baixa a base de fabricantes da IEEE
+wi                      live dashboard in the terminal
+wi web                  3D view in the browser
+wi scan [--json]        single scan (table or JSON)
+wi authorize            macOS: unlock SSID and BSSID (Location permission)
+wi oui update           download the IEEE vendor database
 
---demo                  ambiente sintético (sem hardware)
---web                   (painel) também sobe a visualização 3D
---port <n>              porta HTTP da web (padrão 3333)
---no-open               não abre o navegador
---env <modelo>          open | residential | office | dense (padrão residential)
---interval <s>          intervalo entre varreduras (padrão 2)
---iface <nome>          interface Wi-Fi (Linux/Windows)
---syslog [porta]        escuta syslog UDP do roteador (padrão 1514)
+--demo                  synthetic environment (no hardware)
+--web                   (dashboard) also start the 3D view
+--port <n>              HTTP port for the web view (default 3333)
+--no-open               don't open the browser
+--env <model>           open | residential | office | dense (default residential)
+--interval <s>          interval between scans (default 2)
+--iface <name>          Wi-Fi interface (Linux/Windows)
+--syslog [port]         listen for UDP syslog from the router (default 1514)
 ```
 
-## Estrutura
+## Structure
 
 ```text
-engine/            núcleo em TypeScript (Bun)
+engine/            TypeScript core (Bun)
   sources/         macOS (Swift/CoreWLAN), Linux, Windows, demo
-  rf.ts            modelo de propagação, canais, Kalman, classificação
-  tracker.ts       identidade entre varreduras (inclusive sem BSSID)
-  layout.ts        posição provável
-  spectrum.ts      ocupação, interferência, melhor canal
+  rf.ts            propagation model, channels, Kalman, classification
+  tracker.ts       identity across scans (even without BSSID)
+  layout.ts        probable position
+  spectrum.ts      occupancy, interference, best channel
   netinfo.ts       IP, gateway, DNS, ping
-  engine.ts        orquestração, eventos, snapshots
-cli/               comando wi e painel do terminal
-server/            servidor HTTP + WebSocket (Bun.serve)
-web/               cena 3D (Three.js) e interface
-electron/          janela desktop (npm run electron)
-python/            CLI Python original e gerador de relatórios
+  engine.ts        orchestration, events, snapshots
+cli/               wi command and terminal dashboard
+server/            HTTP + WebSocket server (Bun.serve)
+web/               3D scene (Three.js) and interface
+electron/          desktop window (npm run electron)
+python/            original Python CLI and report generator
 ```
 
-### CLI Python original
+### Original Python CLI
 
-O backend Python continua disponível (`npm run legacy` ou `python monitor.py`) e serve de ponte para os relatórios em PDF, DOCX e XLSX:
+The Python backend is still available (`npm run legacy` or `python monitor.py`) and serves as the bridge for the PDF, DOCX and XLSX reports:
 
 ```bash
 pip install -r python/requirements.txt
 ```
 
-## Contribuir
+## Contributing
 
-PRs são bem-vindos: veja o [guia de contribuição](CONTRIBUTING.md) e o [código de conduta](CODE_OF_CONDUCT.md). A `main` só recebe código por pull request revisado pelos code owners e com o build passando.
+PRs are welcome: see the [contribution guide](CONTRIBUTING.md) and the [code of conduct](CODE_OF_CONDUCT.md). `main` only accepts code through pull requests reviewed by the code owners with a passing build.
 
-## Licença
+## License
 
-[Apache-2.0](LICENSE). Quem usar o código precisa manter os créditos do [NOTICE](NOTICE) e indicar o que mudou. A licença não dá direito ao nome WI//DIAG nem à marca ◢◤.
+[Apache-2.0](LICENSE). Anyone using the code must keep the credits in [NOTICE](NOTICE) and state what was changed. The license grants no rights to the WI//DIAG name or the ◢◤ mark.
 
 <br>
 
 <div align="center">
-<sub>Bun · TypeScript · Three.js · tipografia JetBrains Mono (OFL)</sub>
+<sub>Bun · TypeScript · Three.js · JetBrains Mono typeface (OFL)</sub>
 </div>

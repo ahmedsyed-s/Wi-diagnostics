@@ -1,9 +1,9 @@
-# Código de conduta
+# Code of conduct
 
-Este é um espaço para aprender e construir junto. De todo mundo que participa, esperamos:
+This is a space to learn and build together. From everyone who takes part, we expect:
 
-- respeito: critique o código, não a pessoa;
-- nenhum assédio, discriminação ou ataque pessoal;
-- paciência com quem está começando.
+- respect: criticize the code, not the person;
+- no harassment, discrimination or personal attacks;
+- patience with people who are just starting out.
 
-Comentários que quebrem essas regras podem ser removidos, e quem insistir pode ser bloqueado do projeto. Para relatar algo, fale com os mantenedores: @felipe-dpmedeiros e @EnzoHessel.
+Comments that break these rules may be removed, and anyone who persists may be blocked from the project. To report something, contact the maintainers: @felipe-dpmedeiros and @EnzoHessel.

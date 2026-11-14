@@ -28,7 +28,7 @@ def main():
     if fmt == "all":
         result = generator.generate_all(data)
         if not result:
-            result = {"error": "Nenhuma biblioteca de relatório instalada (pip install -r python/requirements.txt)"}
+            result = {"error": "No report library installed (pip install -r python/requirements.txt)"}
         print(json.dumps(result))
         return
 
@@ -38,12 +38,12 @@ def main():
         "excel": ("has_openpyxl", generator.generate_excel, "openpyxl"),
     }
     if fmt not in formats:
-        print(json.dumps({"error": f"Formato não suportado: {fmt}"}))
+        print(json.dumps({"error": f"Unsupported format: {fmt}"}))
         return
 
     flag, fn, package = formats[fmt]
     if not getattr(generator, flag, False):
-        print(json.dumps({"error": f"Dependência ausente para {fmt}: pip install {package}"}))
+        print(json.dumps({"error": f"Missing dependency for {fmt}: pip install {package}"}))
         return
 
     try:
