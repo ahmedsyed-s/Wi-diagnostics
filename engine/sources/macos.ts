@@ -48,9 +48,9 @@ function macOf(s: unknown): string | null {
 /** Builds the helper app bundle. Returns null on success, or an error message. */
 export async function buildHelper(log: (msg: string) => void = () => {}): Promise<string | null> {
   if (helperIsBuilt()) return null;
-  if (!(await hasSwiftc())) return "swiftc não encontrado (instale as Command Line Tools: xcode-select --install)";
+  if (!(await hasSwiftc())) return "swiftc not found (install the Command Line Tools: xcode-select --install)";
 
-  log("compilando helper CoreWLAN (só na primeira vez, ~20s)…");
+  log("compiling CoreWLAN helper (first run only, ~20s)…");
   mkdirSync(join(HELPER_APP, "Contents", "MacOS"), { recursive: true });
   const plist = join(SRC_DIR, "Info.plist");
   const proc = Bun.spawn(
@@ -61,7 +61,7 @@ export async function buildHelper(log: (msg: string) => void = () => {}): Promis
     { stdout: "ignore", stderr: "pipe" },
   );
   const stderr = await new Response(proc.stderr).text();
-  if ((await proc.exited) !== 0) return `falha ao compilar helper: ${stderr.split("\n").find((l) => l.includes("error")) ?? stderr.slice(0, 200)}`;
+  if ((await proc.exited) !== 0) return `failed to compile helper: ${stderr.split("\n").find((l) => l.includes("error")) ?? stderr.slice(0, 200)}`;
 
   writeFileSync(join(HELPER_APP, "Contents", "Info.plist"), readFileSync(plist));
   await run(["codesign", "--force", "-s", "-", HELPER_APP], 30000);
@@ -182,7 +182,7 @@ export class MacSource implements ScanSource {
         buf = this.drainLines(buf + decoder.decode(chunk, { stream: true }), h);
       }
     })();
-    proc.exited.then((code) => this.restart(h, `saiu (código ${code})`));
+    proc.exited.then((code) => this.restart(h, `exited (code ${code})`));
   }
 
   /** Handles every complete line in `buf` and returns the incomplete remainder. */
@@ -210,7 +210,7 @@ export class MacSource implements ScanSource {
         this.status = {
           ...this.status,
           redacted,
-          note: redacted ? "macOS oculta SSID/BSSID sem permissão de Localização — rode `bun run authorize`" : null,
+          note: redacted ? "macOS hides SSID/BSSID without Location permission — run `bun run authorize`" : null,
         };
         h.onStatus(this.status);
         break;
@@ -291,7 +291,7 @@ export class MacProfilerSource implements ScanSource {
     kind: "macos-profiler",
     label: "macOS · system_profiler",
     redacted: true,
-    note: "Modo limitado: instale as Command Line Tools (xcode-select --install) para o scanner CoreWLAN",
+    note: "Limited mode: install the Command Line Tools (xcode-select --install) for the CoreWLAN scanner",
   };
   private timer: ReturnType<typeof setTimeout> | null = null;
   private stopped = false;

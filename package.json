@@ -1,7 +1,7 @@
 {
   "name": "wi-diagnostics",
   "version": "2.0.0",
-  "description": "WI//DIAG — visualizador de Wi-Fi: radar no terminal (Bun) e espaço RF 3D no navegador",
+  "description": "WI//DIAG — Wi-Fi visualizer: radar in the terminal (Bun) and 3D RF space in the browser",
   "main": "electron/main.js",
   "bin": {
     "wi": "cli/wi.ts"

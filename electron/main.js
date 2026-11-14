@@ -60,7 +60,7 @@ function startEngine(port) {
   // process on the port is never loaded; rejects as soon as the child fails.
   const ready = new Promise((resolve, reject) => {
     let lastError = "";
-    const timer = setTimeout(() => reject(new Error(`sem resposta após ${READY_TIMEOUT_MS / 1000}s`)), READY_TIMEOUT_MS);
+    const timer = setTimeout(() => reject(new Error(`no response after ${READY_TIMEOUT_MS / 1000}s`)), READY_TIMEOUT_MS);
     const settle = (fn, value) => {
       clearTimeout(timer);
       fn(value);
@@ -74,9 +74,9 @@ function startEngine(port) {
       console.error(`[engine] ${line}`);
       if (line.trim()) lastError = line.trim();
     });
-    proc.once("error", (err) => settle(reject, new Error(`não foi possível iniciar o Bun (${err.message}). Rode: npm install`)));
+    proc.once("error", (err) => settle(reject, new Error(`could not start Bun (${err.message}). Run: npm install`)));
     proc.once("exit", (code, signal) =>
-      settle(reject, new Error(`o engine encerrou (${signal || `código ${code}`})${lastError ? `\n\n${lastError}` : ""}`)),
+      settle(reject, new Error(`the engine exited (${signal || `code ${code}`})${lastError ? `\n\n${lastError}` : ""}`)),
     );
   });
   const child = { proc, exited, ready };
@@ -129,7 +129,7 @@ async function createWindow() {
   } catch (err) {
     if (quitting || win.isDestroyed()) return;
     // The window is still hidden: drop it and quit instead of leaving an invisible app behind.
-    dialog.showErrorBox("WI//DIAG", `O engine não iniciou: ${err.message}`);
+    dialog.showErrorBox("WI//DIAG", `The engine did not start: ${err.message}`);
     win.destroy();
     app.quit();
   }

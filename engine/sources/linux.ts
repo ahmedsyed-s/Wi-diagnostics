@@ -38,7 +38,7 @@ export class LinuxSource implements ScanSource {
   }
 
   async start(h: SourceHandlers) {
-    if (!which("nmcli")) throw new Error("nmcli não encontrado (NetworkManager)");
+    if (!which("nmcli")) throw new Error("nmcli not found (NetworkManager)");
     h.onStatus(this.status);
     if (!this.iface) {
       const dev = await run(["nmcli", "-t", "-f", "DEVICE,TYPE", "dev", "status"]);

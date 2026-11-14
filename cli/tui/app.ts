@@ -14,7 +14,7 @@ import {
 
 type Sort = "signal" | "distance" | "channel" | "name";
 const SORTS: Sort[] = ["signal", "distance", "channel", "name"];
-const SORT_LABEL: Record<Sort, string> = { signal: "sinal", distance: "distância", channel: "canal", name: "nome" };
+const SORT_LABEL: Record<Sort, string> = { signal: "signal", distance: "distance", channel: "channel", name: "name" };
 const FILTERS: (Band | "all")[] = ["all", "2.4", "5", "6"];
 const TAU = Math.PI * 2;
 const wrap = (a: number) => ((a % TAU) + TAU) % TAU;
@@ -151,16 +151,16 @@ export class Tui {
       }
       case "f":
         this.filter = FILTERS[(FILTERS.indexOf(this.filter) + 1) % FILTERS.length];
-        this.notify(`filtro: ${this.filter === "all" ? "todas as bandas" : this.filter + " GHz"}`);
+        this.notify(`filter: ${this.filter === "all" ? "all bands" : this.filter + " GHz"}`);
         return;
       case "s":
         this.sort = SORTS[(SORTS.indexOf(this.sort) + 1) % SORTS.length];
-        this.notify(`ordenando por ${SORT_LABEL[this.sort]}`);
+        this.notify(`sorting by ${SORT_LABEL[this.sort]}`);
         return;
       case "e": {
         const next = ENV_ORDER[(ENV_ORDER.indexOf(this.engine.env.preset) + 1) % ENV_ORDER.length];
         this.engine.setEnvironment(next);
-        this.notify(`modelo: ${this.engine.env.label} (n=${this.engine.env.exponent})`);
+        this.notify(`model: ${this.engine.env.label} (n=${this.engine.env.exponent})`);
         return;
       }
       case "m":
@@ -168,24 +168,24 @@ export class Tui {
         return;
       case "p":
         this.paused = !this.paused;
-        this.notify(this.paused ? "pausado" : "ao vivo");
+        this.notify(this.paused ? "paused" : "live");
         return;
       case "w":
         if (this.webUrl) {
-          this.notify(`web em ${this.webUrl}`);
+          this.notify(`web at ${this.webUrl}`);
           try {
             Bun.spawn([process.platform === "darwin" ? "open" : process.platform === "win32" ? "explorer" : "xdg-open", this.webUrl], { stdout: "ignore", stderr: "ignore" });
           } catch {
             // no browser opener (headless Linux): the URL is already in the toast
           }
         } else if (this.opts.startWeb) {
-          this.notify("iniciando visualização 3D…");
+          this.notify("starting 3D view…");
           this.opts.startWeb().then(
             (url) => {
               this.webUrl = url;
-              this.notify(`web 3D em ${url}`, C.good);
+              this.notify(`3D web at ${url}`, C.good);
             },
-            (e) => this.notify(`falha ao iniciar web: ${e.message}`, C.bad),
+            (e) => this.notify(`failed to start web: ${e.message}`, C.bad),
           );
         }
         return;
@@ -214,8 +214,8 @@ export class Tui {
     if (now < this.bootUntil || !this.snap) this.drawBoot(now);
     else if (s.w < 96 || s.h < 28) {
       s.text(2, 1, "WI//DIAG", C.title, -1, BOLD);
-      s.text(2, 3, `Terminal pequeno demais (${s.w}×${s.h}).`, C.text);
-      s.text(2, 4, "Aumente para pelo menos 96×28.", C.dim);
+      s.text(2, 3, `Terminal too small (${s.w}×${s.h}).`, C.text);
+      s.text(2, 4, "Enlarge it to at least 96×28.", C.dim);
     } else this.drawMain(now);
 
     process.stdout.write(s.flush());
@@ -259,7 +259,7 @@ export class Tui {
     const tx = Math.floor((s.w - title.length) / 2);
     s.fill(tx - 3, cy - 2, title.length + 6, 5, C.bg);
     s.text(tx, cy - 1, title, C.bright, -1, BOLD);
-    const sub = this.snap ? "sincronizando com o espectro…" : "acordando os rádios…";
+    const sub = this.snap ? "syncing with the spectrum…" : "waking up the radios…";
     const dots = ".".repeat(Math.floor(now / 300) % 4);
     s.text(Math.floor((s.w - sub.length) / 2), cy + 1, sub.replace("…", dots.padEnd(3)), C.dim);
   }
@@ -327,22 +327,22 @@ export class Tui {
     seg(`v${snap.version}`, C.dim, 0, 1);
     seg("│", C.border, 0, 1);
 
-    const live = snap.source.kind === "demo" ? "DEMO" : this.paused ? "PAUSA" : "AO VIVO";
+    const live = snap.source.kind === "demo" ? "DEMO" : this.paused ? "PAUSED" : "LIVE";
     const blink = Math.floor(now / 600) % 2 === 0;
     const liveColor = snap.source.kind === "demo" ? C.warn : this.paused ? C.dim : C.good;
     seg(blink || this.paused ? "●" : "○", liveColor, 0, 1);
     seg(live, liveColor, BOLD, 1);
     seg(snap.source.label, C.text, 0, 2);
-    const count: Part[] = [["│ ", C.border], [`${snap.stats.visible}`, C.bright, BOLD], [" rádios", C.dim]];
+    const count: Part[] = [["│ ", C.border], [`${snap.stats.visible}`, C.bright, BOLD], [" radios", C.dim]];
     // The redaction notice yields to the radio count.
-    if (snap.source.redacted) group(2, [["⚠ SSID/BSSID ocultos", C.warn]], 2 + width(count));
+    if (snap.source.redacted) group(2, [["⚠ SSID/BSSID hidden", C.warn]], 2 + width(count));
 
     const b = snap.stats.byBand;
     if (!group(1, count)) return;
     if (!group(2, [[`2.4:${b["2.4"]} `, BAND_COLOR["2.4"]], [`5:${b["5"]} `, BAND_COLOR["5"]], [`6:${b["6"]}`, BAND_COLOR["6"]]])) return;
     const scanAge = snap.scan.lastAt ? ago(snap.scan.lastAt) : "—";
     const scan = `scan #${snap.scan.count}`;
-    if (!group(0, [[`${scan} · ${snap.scan.durationMs ? (snap.scan.durationMs / 1000).toFixed(1) + "s" : "—"} · há ${scanAge}`, C.dim]])) group(0, [[scan, C.dim]]);
+    if (!group(0, [[`${scan} · ${snap.scan.durationMs ? (snap.scan.durationMs / 1000).toFixed(1) + "s" : "—"} · ${scanAge} ago`, C.dim]])) group(0, [[scan, C.dim]]);
   }
 
   private drawFooter(snap: Snapshot, now: number) {
@@ -353,8 +353,8 @@ export class Tui {
       s.text(1, y, `» ${this.toast.text}`, this.toast.color, C.panel, BOLD);
     } else {
       const keys: [string, string][] = [
-        ["↑↓", "selecionar"], ["⏎", "detalhes"], ["f", "filtro"], ["s", "ordenar"], ["b", "espectro"],
-        ["e", "ambiente"], ["w", "web 3D"], ["m", "matrix"], ["p", "pausa"], ["q", "sair"],
+        ["↑↓", "select"], ["⏎", "details"], ["f", "filter"], ["s", "sort"], ["b", "spectrum"],
+        ["e", "environment"], ["w", "3D web"], ["m", "matrix"], ["p", "pause"], ["q", "quit"],
       ];
       let x = 1;
       for (const [k, label] of keys) {
@@ -363,7 +363,7 @@ export class Tui {
         x += s.text(x, y, label, C.dim, C.panel) + 2;
       }
     }
-    const env = `modelo ${snap.env.label} n=${snap.env.exponent} · ${this.filter === "all" ? "todas" : this.filter + "G"} · ${SORT_LABEL[this.sort]} `;
+    const env = `model ${snap.env.label} n=${snap.env.exponent} · ${this.filter === "all" ? "all" : this.filter + "G"} · ${SORT_LABEL[this.sort]} `;
     s.text(s.w - [...env].length, y, env, C.dim, C.panel);
   }
 
@@ -371,7 +371,7 @@ export class Tui {
 
   private drawRadar(snap: Snapshot, selected: NetworkView | null, x: number, y: number, w: number, h: number, now: number) {
     const s = this.screen;
-    s.box(x, y, w, h, C.border, "RADAR RF", C.title, "escala log · azimute estimado", C.faint);
+    s.box(x, y, w, h, C.border, "RADAR RF", C.title, "log scale · estimated azimuth", C.faint);
     const ix = x + 1;
     const iy = y + 1;
     const iw = w - 2;
@@ -480,8 +480,8 @@ export class Tui {
       ["●", BAND_COLOR["2.4"], "2.4 GHz"],
       ["●", BAND_COLOR["5"], "5 GHz"],
       ["●", BAND_COLOR["6"], "6 GHz"],
-      ["◆", C.link, "conectado"],
-      ["◈", C.receiver, "você"],
+      ["◆", C.link, "connected"],
+      ["◈", C.receiver, "you"],
     ];
     for (const [g, color, label] of legend) {
       if (lx + 2 + textWidth(label) > ix + iw) break;
@@ -495,7 +495,7 @@ export class Tui {
   private drawLink(snap: Snapshot, x: number, y: number, w: number, h: number) {
     const s = this.screen;
     const l = snap.link;
-    const status = l.connected ? "CONECTADO" : "DESCONECTADO";
+    const status = l.connected ? "CONNECTED" : "DISCONNECTED";
     s.box(x, y, w, h, l.connected ? C.borderHi : C.border, "LINK", C.title, status, l.connected ? C.good : C.bad);
     const ix = x + 2;
     const iw = w - 4;
@@ -503,7 +503,7 @@ export class Tui {
 
     const net = snap.networks.find((n) => n.id === l.networkId);
     if (!l.connected) {
-      s.text(ix, row + 2, "Sem associação Wi-Fi ativa.", C.dim);
+      s.text(ix, row + 2, "No active Wi-Fi association.", C.dim);
       s.text(ix, row + 3, `IP ${l.ip ?? "—"} · gateway ${l.gateway ?? "—"}`, C.dim);
       return;
     }
@@ -536,8 +536,8 @@ export class Tui {
       l.mcs !== null ? `MCS ${l.mcs}` : null,
       l.phy,
       l.security,
-      l.noise !== null ? `ruído ${l.noise} dBm` : null,
-      net?.maxRate ? `máx teórico ~${net.maxRate} Mbps` : null,
+      l.noise !== null ? `noise ${l.noise} dBm` : null,
+      net?.maxRate ? `theoretical max ~${net.maxRate} Mbps` : null,
     ].filter(Boolean).join(" · ");
     s.text(ix, row, phy, C.text, -1, 0, iw);
     row++;
@@ -553,7 +553,7 @@ export class Tui {
       const hist = p.history.slice(-sw);
       const hi = Math.max(10, ...hist.filter((v): v is number => v !== null));
       cx += s.text(cx, row, sparkline(hist, sw, 0, hi), lastColor) + 1;
-      s.text(cx, row, `méd ${fmtMs(p.avg)} jit ${fmtMs(p.jitter)} perda ${(p.loss * 100).toFixed(0)}%`, C.dim, -1, 0, ix + iw - cx);
+      s.text(cx, row, `avg ${fmtMs(p.avg)} jit ${fmtMs(p.jitter)} loss ${(p.loss * 100).toFixed(0)}%`, C.dim, -1, 0, ix + iw - cx);
       row++;
     }
 
@@ -567,7 +567,7 @@ export class Tui {
     // 7. verdict + score
     const q = l.quality ?? 0;
     const qColor = q >= 75 ? C.good : q >= 50 ? C.warn : C.bad;
-    const score = `QUALIDADE ${q}/100`;
+    const score = `QUALITY ${q}/100`;
     s.text(ix, row, `▶ ${l.verdict}`, qColor, -1, BOLD, iw - score.length - 2);
     s.text(ix + iw - score.length, row, score, qColor, -1, BOLD);
   }
@@ -576,8 +576,8 @@ export class Tui {
 
   private drawTable(snap: Snapshot, rows: NetworkView[], x: number, y: number, w: number, h: number) {
     const s = this.screen;
-    const right = `${rows.length} de ${snap.networks.length} · ${SORT_LABEL[this.sort]}`;
-    s.box(x, y, w, h, C.border, "REDES", C.title, right, C.dim);
+    const right = `${rows.length} of ${snap.networks.length} · ${SORT_LABEL[this.sort]}`;
+    s.box(x, y, w, h, C.border, "NETWORKS", C.title, right, C.dim);
     const ix = x + 1;
     const iw = w - 2;
     const bodyH = h - 3;
@@ -606,16 +606,16 @@ export class Tui {
       hx += width;
     };
     head("", cols.mark);
-    head("REDE", cols.name);
-    head("BANDA", cols.band);
+    head("NETWORK", cols.name);
+    head("BAND", cols.band);
     head("CH", cols.ch);
-    head("LARG", cols.width);
-    head(cols.rssi >= 14 ? "SINAL" : "RSSI", cols.rssi);
-    head("TENDÊNCIA", cols.trend);
+    head("WIDTH", cols.width);
+    head(cols.rssi >= 14 ? "SIGNAL" : "RSSI", cols.rssi);
+    head("TREND", cols.trend);
     head("DIST", cols.dist);
-    head("SEG", cols.grade);
-    head("GERAÇÃO", cols.gen);
-    head("FABRICANTE", cols.vendor);
+    head("SEC", cols.grade);
+    head("GEN", cols.gen);
+    head("VENDOR", cols.vendor);
 
     const selIdx = Math.max(0, rows.findIndex((n) => n.id === this.selectedId));
     if (selIdx < this.scroll) this.scroll = selIdx;
@@ -655,10 +655,10 @@ export class Tui {
       cell(`~${fmtDist(n.distance.est)}`, cols.dist, tc);
       cell(n.securityGrade, cols.grade, mix(C.bg, GRADE_COLOR[n.securityGrade], fade), BOLD);
       cell(n.generation, cols.gen, mix(C.bg, C.dim, fade));
-      cell(n.vendor ?? (n.randomizedMac ? "MAC aleatório" : "—"), cols.vendor, mix(C.bg, C.dim, fade));
+      cell(n.vendor ?? (n.randomizedMac ? "random MAC" : "—"), cols.vendor, mix(C.bg, C.dim, fade));
     });
 
-    if (!rows.length) s.text(ix + 2, y + 3, "aguardando varredura…", C.dim);
+    if (!rows.length) s.text(ix + 2, y + 3, "waiting for scan…", C.dim);
     const hint = snap.source.note;
     if (hint) s.text(ix + 1, y + h - 1, ` ${truncate(hint, iw - 4)} `, C.warn);
   }
@@ -669,8 +669,8 @@ export class Tui {
     const s = this.screen;
     const band = this.spectrumBand;
     const spec = snap.spectrum.find((b) => b.band === band)!;
-    const best = spec.best ? `melhor canal ▲ ${spec.best.channel} (${spec.best.width} MHz)` : "sem redes nesta banda";
-    s.box(x, y, w, h, C.border, `ESPECTRO · ${band} GHz`, C.title, best, spec.best ? C.good : C.dim);
+    const best = spec.best ? `best channel ▲ ${spec.best.channel} (${spec.best.width} MHz)` : "no networks in this band";
+    s.box(x, y, w, h, C.border, `SPECTRUM · ${band} GHz`, C.title, best, spec.best ? C.good : C.dim);
 
     const axisW = 4;
     const ix = x + 1 + axisW;
@@ -742,7 +742,7 @@ export class Tui {
   private drawEvents(snap: Snapshot, x: number, y: number, w: number, h: number) {
     const s = this.screen;
     const right = snap.syslog.enabled ? `syslog :${snap.syslog.port} · ${snap.syslog.received}` : `${snap.events.length}`;
-    s.box(x, y, w, h, C.border, "EVENTOS", C.title, right, C.dim);
+    s.box(x, y, w, h, C.border, "EVENTS", C.title, right, C.dim);
     const events = [...snap.events].reverse().slice(0, h - 2);
     events.forEach((e, i) => {
       const ry = y + 1 + i;
@@ -762,7 +762,7 @@ export class Tui {
     const x = Math.floor((s.w - w) / 2);
     const y = Math.floor((s.h - h) / 2);
     s.fill(x, y, w, h, C.panel);
-    s.box(x, y, w, h, BAND_COLOR[n.band], truncate(n.name, w - 30), C.bright, n.connected ? "◆ CONECTADA" : "esc fecha", n.connected ? C.link : C.dim);
+    s.box(x, y, w, h, BAND_COLOR[n.band], truncate(n.name, w - 30), C.bright, n.connected ? "◆ CONNECTED" : "esc closes", n.connected ? C.link : C.dim);
 
     const kx = x + 2;
     const vx = x + 17;
@@ -776,24 +776,24 @@ export class Tui {
     };
     const names = (ids: string[]) => ids.map((id) => snap.networks.find((m) => m.id === id)?.name).filter(Boolean).join(", ") || "—";
 
-    line("SSID", n.ssid ?? (n.redacted ? "oculto pelo macOS (rode `bun run authorize`)" : "rede oculta"), n.ssid ? C.bright : C.warn);
-    line("BSSID", `${n.bssid ?? "—"}${n.randomizedMac ? "  (MAC aleatório/local)" : ""}${n.vendor ? "  · " + n.vendor : ""}`);
-    line("Canal", `${n.band} GHz · ch ${n.channel}${isDfs(n.channel, n.band) ? " (DFS)" : ""} · ${n.freq} MHz · largura ${n.width} MHz · ocupa ${n.span[0]}–${n.span[1]} MHz`);
-    line("Sinal", `${Math.round(n.rssi)} dBm · pico ${n.rssiPeak} · σ ${n.rssiStd} dB · ${rssiLabel(n.rssi)} · qualidade ${n.quality}%`, rssiColor(n.rssi));
-    line("SNR / ruído", n.snr !== null ? `${n.snr} dB · ruído ${n.noise} dBm` : "— (o SO não reporta ruído desta rede)");
-    line("Distância", `~${fmtDist(n.distance.est)}  (faixa ${fmtDist(n.distance.min)} – ${fmtDist(n.distance.max)}, modelo ${snap.env.label} n=${snap.env.exponent})`, C.bright);
-    line("Posição", `azimute ${Math.round((n.position.azimuth * 180) / Math.PI)}° (estimado) · altura ${n.position.y.toFixed(1)} m · confiança ${Math.round(n.position.confidence * 100)}%`);
-    line("Segurança", `${n.security}  [${n.securityGrade}]`, GRADE_COLOR[n.securityGrade]);
-    line("PHY", `${n.phy} · ${n.generation}${n.maxRate ? ` · máx teórico ~${n.maxRate} Mbps (2×2)` : ""}${n.beaconInterval ? ` · beacon ${n.beaconInterval} TU` : ""}`);
+    line("SSID", n.ssid ?? (n.redacted ? "hidden by macOS (run `bun run authorize`)" : "hidden network"), n.ssid ? C.bright : C.warn);
+    line("BSSID", `${n.bssid ?? "—"}${n.randomizedMac ? "  (random/local MAC)" : ""}${n.vendor ? "  · " + n.vendor : ""}`);
+    line("Channel", `${n.band} GHz · ch ${n.channel}${isDfs(n.channel, n.band) ? " (DFS)" : ""} · ${n.freq} MHz · width ${n.width} MHz · occupies ${n.span[0]}–${n.span[1]} MHz`);
+    line("Signal", `${Math.round(n.rssi)} dBm · peak ${n.rssiPeak} · σ ${n.rssiStd} dB · ${rssiLabel(n.rssi)} · quality ${n.quality}%`, rssiColor(n.rssi));
+    line("SNR / noise", n.snr !== null ? `${n.snr} dB · noise ${n.noise} dBm` : "— (the OS does not report noise for this network)");
+    line("Distance", `~${fmtDist(n.distance.est)}  (range ${fmtDist(n.distance.min)} – ${fmtDist(n.distance.max)}, model ${snap.env.label} n=${snap.env.exponent})`, C.bright);
+    line("Position", `azimuth ${Math.round((n.position.azimuth * 180) / Math.PI)}° (estimated) · height ${n.position.y.toFixed(1)} m · confidence ${Math.round(n.position.confidence * 100)}%`);
+    line("Security", `${n.security}  [${n.securityGrade}]`, GRADE_COLOR[n.securityGrade]);
+    line("PHY", `${n.phy} · ${n.generation}${n.maxRate ? ` · theoretical max ~${n.maxRate} Mbps (2×2)` : ""}${n.beaconInterval ? ` · beacon ${n.beaconInterval} TU` : ""}`);
     const it = n.interference;
-    line("Interferência", `${it.score}/100 · SIR ${it.sir ?? "—"} dB · ${it.cochannel} co-canal · ${it.overlapping} sobreposição parcial`, it.score > 60 ? C.bad : it.score > 30 ? C.warn : C.good);
-    line("Vizinhos", names(it.neighbors));
-    line("Observado", `há ${ago(n.firstSeen)} · última vez há ${ago(n.lastSeen)} · ${n.samples} amostras${n.stale ? " · fora do último scan" : ""}`);
+    line("Interference", `${it.score}/100 · SIR ${it.sir ?? "—"} dB · ${it.cochannel} co-channel · ${it.overlapping} partial overlap`, it.score > 60 ? C.bad : it.score > 30 ? C.warn : C.good);
+    line("Neighbors", names(it.neighbors));
+    line("Observed", `first ${ago(n.firstSeen)} ago · last ${ago(n.lastSeen)} ago · ${n.samples} samples${n.stale ? " · outside last scan" : ""}`);
 
     // RSSI history chart
     const chartH = Math.max(h - (row - y) - 2, 3);
     const cy = y + h - chartH - 1;
-    s.text(kx, cy - 1 >= row ? cy - 1 : cy, "histórico RSSI", C.dim, C.panel);
+    s.text(kx, cy - 1 >= row ? cy - 1 : cy, "RSSI history", C.dim, C.panel);
     const cw = w - 10;
     const bc = new Braille(cw, chartH);
     const hist = n.history;

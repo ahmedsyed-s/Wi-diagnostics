@@ -96,12 +96,12 @@ export class WiEngine {
     }
     if (!this.source) {
       const demo = new DemoSource(this.opts.interval);
-      demo.status.note = "Nenhum scanner disponível nesta plataforma — exibindo dados sintéticos";
+      demo.status.note = "No scanner available on this platform — showing synthetic data";
       this.sourceStatus = demo.status;
       await demo.start(handlers);
       this.source = demo;
     }
-    this.pushEvent("info", "source", `Fonte de dados: ${this.sourceStatus.label}`);
+    this.pushEvent("info", "source", `Data source: ${this.sourceStatus.label}`);
 
     if (this.sourceStatus.kind === "demo") this.startDemoNetwork();
     else {
@@ -115,9 +115,9 @@ export class WiEngine {
       this.syslog = new SyslogListener(this.opts.syslogPort, (level, kind, msg) => this.pushEvent(level, kind, msg));
       try {
         await this.syslog.start();
-        this.pushEvent("info", "syslog", `Syslog escutando em UDP :${this.opts.syslogPort}`);
+        this.pushEvent("info", "syslog", `Syslog listening on UDP :${this.opts.syslogPort}`);
       } catch (e) {
-        this.pushEvent("warn", "syslog", `Syslog indisponível: ${(e as Error).message}`);
+        this.pushEvent("warn", "syslog", `Syslog unavailable: ${(e as Error).message}`);
         this.syslog = null;
       }
     }
@@ -169,7 +169,7 @@ export class WiEngine {
   setEnvironment(preset: EnvironmentPreset) {
     if (!ENVIRONMENTS[preset] || preset === this.env.preset) return;
     this.env = ENVIRONMENTS[preset];
-    this.pushEvent("info", "env", `Modelo de propagação: ${this.env.label} (n=${this.env.exponent})`);
+    this.pushEvent("info", "env", `Propagation model: ${this.env.label} (n=${this.env.exponent})`);
     this.publish();
   }
 
@@ -184,20 +184,20 @@ export class WiEngine {
       this.lastScanDuration = batch.durationMs;
       const warmingUp = this.realScans <= 3; // consecutive OS scans disagree a lot at first
       if (this.realScans === 1) {
-        this.pushEvent("good", "scan", `Varredura inicial: ${batch.networks.length} rádios detectados`);
+        this.pushEvent("good", "scan", `Initial scan: ${batch.networks.length} radios detected`);
       } else if (warmingUp) {
         // fold early discoveries into the initial picture silently
       } else if (fresh.length > 4) {
-        this.pushEvent("info", "new", `${fresh.length} novas redes no ar`);
+        this.pushEvent("info", "new", `${fresh.length} new networks on air`);
       } else {
         for (const id of fresh) {
           const t = this.tracker.tracks.get(id)!;
-          this.pushEvent("info", "new", `Nova rede: ${this.nameOf(t)} · ${t.band} GHz ch ${t.channel}`, id);
+          this.pushEvent("info", "new", `New network: ${this.nameOf(t)} · ${t.band} GHz ch ${t.channel}`, id);
         }
       }
       const expiry = Math.max(45000, 4 * ((this.lastScanDuration ?? 0) + this.opts.interval! * 1000));
       for (const t of this.tracker.expire(expiry)) {
-        if (t.samples >= 3) this.pushEvent("info", "lost", `Rede fora de alcance: ${this.nameOf(t)}`, t.id);
+        if (t.samples >= 3) this.pushEvent("info", "lost", `Network out of range: ${this.nameOf(t)}`, t.id);
       }
     }
     this.schedulePublish();
@@ -219,9 +219,9 @@ export class WiEngine {
       if (!prev.connected && connected) this.pushEvent("good", "link", "Wi-Fi conectado");
       if (connected && prev.connected) {
         if (link!.bssid && prev.bssid && link!.bssid !== prev.bssid) {
-          this.pushEvent("warn", "roam", `Roaming para outro AP (${link!.bssid})`);
+          this.pushEvent("warn", "roam", `Roamed to another AP (${link!.bssid})`);
         } else if (link!.channel && prev.channel && link!.channel !== prev.channel) {
-          this.pushEvent("warn", "channel", `AP mudou do canal ${prev.channel} para ${link!.channel}`);
+          this.pushEvent("warn", "channel", `AP changed from channel ${prev.channel} to ${link!.channel}`);
         }
       }
     }
@@ -233,7 +233,7 @@ export class WiEngine {
     if (h.length < 25) return;
     const recent = stats(h.slice(-5)).mean;
     const before = stats(h.slice(-25, -10)).mean;
-    if (before - recent >= 10) this.pushEvent("warn", "drop", `Queda de sinal: ${Math.round(before)} → ${Math.round(recent)} dBm`, undefined, 30000);
+    if (before - recent >= 10) this.pushEvent("warn", "drop", `Signal drop: ${Math.round(before)} → ${Math.round(recent)} dBm`, undefined, 30000);
     if (recent - before >= 10) this.pushEvent("good", "gain", `Sinal melhorou: ${Math.round(before)} → ${Math.round(recent)} dBm`, undefined, 30000);
   }
 
@@ -279,13 +279,13 @@ export class WiEngine {
     const trailing = this.inetPing.trailingLoss;
     if (!this.internetDown && trailing >= 3) {
       this.internetDown = true;
-      this.pushEvent("bad", "internet", `Internet sem resposta (${this.inetPing.target})`);
+      this.pushEvent("bad", "internet", `Internet not responding (${this.inetPing.target})`);
     } else if (this.internetDown && trailing === 0 && this.inetPing.stat().last !== null) {
       this.internetDown = false;
       this.pushEvent("good", "internet", "Internet restabelecida");
     }
     if (gw.last !== null && gw.avg !== null && gw.last > Math.max(40, gw.avg * 4)) {
-      this.pushEvent("warn", "latency", `Pico de latência no gateway: ${gw.last.toFixed(0)} ms`, undefined, 30000);
+      this.pushEvent("warn", "latency", `Gateway latency spike: ${gw.last.toFixed(0)} ms`, undefined, 30000);
     }
   }
 
@@ -294,7 +294,7 @@ export class WiEngine {
   private nameOf(t: Track): string {
     if (t.ssid) return t.ssid;
     if (this.sourceStatus.redacted && !t.bssid) return codename(t.id);
-    return `‹oculta› ${codename(t.id)}`;
+    return `‹hidden› ${codename(t.id)}`;
   }
 
   private schedulePublish() {
@@ -504,7 +504,7 @@ export class WiEngine {
     const routerVendor = lookupVendor(this.netInfo.routerMac) ?? (this.sourceStatus.kind === "demo" ? "TP-Link" : null);
 
     let quality: number | null = null;
-    let verdict = "Sem conexão Wi-Fi";
+    let verdict = "No Wi-Fi connection";
     if (l && l.rssi !== null) {
       const sig = signalQuality(l.rssi, snr);
       const lat = gw.avg === null ? 70 : Math.min(Math.max(100 - (gw.avg - 5) * 1.05, 0), 100);
@@ -521,15 +521,15 @@ export class WiEngine {
           sameBlock = ls[0] < best.span[1] && ls[1] > best.span[0];
         }
       }
-      if (this.inetPing.trailingLoss >= 3) verdict = gw.last !== null ? "Internet sem resposta — LAN ok, problema no provedor/WAN" : "Gateway sem resposta";
-      else if (l.rssi < -75) verdict = "Sinal fraco — aproxime-se do roteador ou use mesh/repetidor";
+      if (this.inetPing.trailingLoss >= 3) verdict = gw.last !== null ? "Internet not responding — LAN ok, problem at the ISP/WAN" : "Gateway not responding";
+      else if (l.rssi < -75) verdict = "Weak signal — move closer to the router or use mesh/a repeater";
       else if (net && net.interference.score > 60 && best && !sameBlock)
-        verdict = `Canal ${l.channel} congestionado — considere o canal ${best.channel}`;
-      else if (inet.loss > 0.05) verdict = `Perda de pacotes de ${(inet.loss * 100).toFixed(0)}% para a internet`;
-      else if (gw.jitter !== null && gw.jitter > 20) verdict = "Jitter alto na rede local";
-      else if (snr !== null && snr < 20) verdict = "SNR baixo — ruído ou interferência no canal";
-      else if (l.rssi >= -60 && (gw.avg ?? 0) < 15) verdict = "Link excelente";
-      else verdict = "Link estável";
+        verdict = `Channel ${l.channel} congested — consider channel ${best.channel}`;
+      else if (inet.loss > 0.05) verdict = `${(inet.loss * 100).toFixed(0)}% packet loss to the internet`;
+      else if (gw.jitter !== null && gw.jitter > 20) verdict = "High jitter on the local network";
+      else if (snr !== null && snr < 20) verdict = "Low SNR — noise or interference on the channel";
+      else if (l.rssi >= -60 && (gw.avg ?? 0) < 15) verdict = "Excellent link";
+      else verdict = "Stable link";
     }
 
     return {

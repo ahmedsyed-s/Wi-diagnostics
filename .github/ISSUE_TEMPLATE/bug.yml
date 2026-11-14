@@ -1,18 +1,18 @@
 name: Bug
-description: Algo não funciona como deveria
+description: Something doesn't work as it should
 labels: [bug]
 body:
   - type: textarea
     id: what
     attributes:
-      label: O que aconteceu
-      description: E o que você esperava que acontecesse.
+      label: What happened
+      description: And what you expected to happen.
     validations:
       required: true
   - type: textarea
     id: steps
     attributes:
-      label: Como reproduzir
+      label: How to reproduce
       placeholder: |
         1. npm run web:demo
         2. …
@@ -21,7 +21,7 @@ body:
   - type: dropdown
     id: os
     attributes:
-      label: Sistema
+      label: System
       options: [macOS, Linux, Windows]
     validations:
       required: true
@@ -29,12 +29,12 @@ body:
     id: interface
     attributes:
       label: Interface
-      options: [Terminal (npm run cli), Navegador 3D (npm run web), App desktop]
+      options: [Terminal (npm run cli), 3D browser (npm run web), Desktop app]
     validations:
       required: true
   - type: textarea
     id: logs
     attributes:
-      label: Logs ou prints
-      description: Sem SSIDs, BSSIDs ou IPs reais. Se der, reproduza no modo demo.
+      label: Logs or screenshots
+      description: No real SSIDs, BSSIDs or IPs. If you can, reproduce it in demo mode.
       render: text

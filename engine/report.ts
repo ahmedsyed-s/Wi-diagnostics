@@ -79,7 +79,7 @@ export interface ReportResult {
 
 export async function generateReport(s: Snapshot, format: string): Promise<ReportResult> {
   const python = Bun.which("python3") ?? Bun.which("python");
-  if (!python) return { ok: false, error: "Python não encontrado — use a exportação CSV/JSON" };
+  if (!python) return { ok: false, error: "Python not found — use the CSV/JSON export" };
   try {
     const proc = Bun.spawn([python, join(ROOT, "python", "report_cli.py"), format], {
       cwd: ROOT,
@@ -97,7 +97,7 @@ export async function generateReport(s: Snapshot, format: string): Promise<Repor
     if (parsed.error) return { ok: false, error: parsed.error };
     const files = Object.fromEntries(Object.entries(parsed).filter(([k]) => !k.endsWith("_error"))) as Record<string, string>;
     const errors = Object.entries(parsed).filter(([k]) => k.endsWith("_error")).map(([k, v]) => `${k}: ${v}`);
-    if (!Object.keys(files).length) return { ok: false, error: errors.join("; ") || err.trim() || "nenhum relatório gerado" };
+    if (!Object.keys(files).length) return { ok: false, error: errors.join("; ") || err.trim() || "no report generated" };
     return { ok: true, files };
   } catch (e) {
     return { ok: false, error: (e as Error).message };

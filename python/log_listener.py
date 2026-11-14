@@ -44,9 +44,9 @@ class LogListener:
         self.port = port or self.PORT
 
         self.logs: List[LogEntry] = []
-        self.quedas: List[Dict[str, Any]] = []
-        self._queda_ativa = False
-        self._inicio_queda: Optional[datetime] = None
+        self.outages: List[Dict[str, Any]] = []
+        self._outage_active = False
+        self._outage_start: Optional[datetime] = None
 
         self._running = False
         self._socket: Optional[socket.socket] = None
@@ -96,34 +96,34 @@ class LogListener:
 
         # Detect connection drops
         if any(p in msg_lower for p in self._event_patterns["pppoe_down"]):
-            if not self._queda_ativa:
-                self._queda_ativa = True
-                self._inicio_queda = entry.timestamp
-                print(f"[log_listener] 🔴 Queda detectada: {entry.message}")
+            if not self._outage_active:
+                self._outage_active = True
+                self._outage_start = entry.timestamp
+                print(f"[log_listener] 🔴 Outage detected: {entry.message}")
 
         # Detect connection restoration
         elif any(p in msg_lower for p in self._event_patterns["pppoe_up"]):
-            if self._queda_ativa:
-                fim = entry.timestamp
-                duracao = (fim - self._inicio_queda).total_seconds()
+            if self._outage_active:
+                end = entry.timestamp
+                duration = (end - self._outage_start).total_seconds()
 
-                queda_record = {
-                    "inicio": self._inicio_queda.isoformat(),
-                    "fim": fim.isoformat(),
-                    "duracao_segundos": duracao,
+                outage_record = {
+                    "start": self._outage_start.isoformat(),
+                    "end": end.isoformat(),
+                    "duration_seconds": duration,
                     "message": entry.message,
                 }
 
                 with self._lock:
-                    self.quedas.append(queda_record)
+                    self.outages.append(outage_record)
 
-                self._queda_ativa = False
-                print(f"[log_listener] 🟢 Conexão restaurada | duração: {duracao:.0f}s")
+                self._outage_active = False
+                print(f"[log_listener] 🟢 Connection restored | duration: {duration:.0f}s")
 
                 # Fire callbacks with outage event
                 self._notify({
                     "type": "outage",
-                    "data": queda_record,
+                    "data": outage_record,
                 })
 
     def _notify(self, data: Dict[str, Any]):
@@ -224,10 +224,10 @@ class LogListener:
         logs = logs[-limit:]
         return [l.to_dict() for l in reversed(logs)]
 
-    def get_quedas(self) -> List[Dict]:
+    def get_outages(self) -> List[Dict]:
         """Get all detected outages."""
         with self._lock:
-            return self.quedas.copy()
+            return self.outages.copy()
 
     def get_stats(self) -> Dict[str, Any]:
         """Get log statistics."""
@@ -237,16 +237,16 @@ class LogListener:
             warnings = sum(1 for l in self.logs if l.log_type == "warning")
             connections = sum(1 for l in self.logs if l.log_type == "connection")
 
-            total_downtime = sum(q["duracao_segundos"] for q in self.quedas)
+            total_downtime = sum(q["duration_seconds"] for q in self.outages)
 
             return {
                 "total_logs": total,
                 "errors": errors,
                 "warnings": warnings,
                 "connections": connections,
-                "total_outages": len(self.quedas),
+                "total_outages": len(self.outages),
                 "total_downtime_seconds": total_downtime,
-                "currently_down": self._queda_ativa,
+                "currently_down": self._outage_active,
             }
 
     def generate_report_data(self) -> Dict[str, Any]:
@@ -254,7 +254,7 @@ class LogListener:
         return {
             "generated_at": datetime.now().isoformat(),
             "stats": self.get_stats(),
-            "outages": self.get_quedas(),
+            "outages": self.get_outages(),
             "recent_logs": self.get_logs(limit=50),
         }
 

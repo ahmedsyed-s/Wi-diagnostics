@@ -7,10 +7,10 @@ import type { Band, DistanceEstimate, EnvironmentModel, EnvironmentPreset } from
 // ─── Environment presets (log-distance path loss) ─────────────────────────
 
 export const ENVIRONMENTS: Record<EnvironmentPreset, EnvironmentModel> = {
-  open: { preset: "open", label: "Espaço aberto", exponent: 2.2, shadowing: 3 },
-  residential: { preset: "residential", label: "Residencial", exponent: 3.0, shadowing: 5 },
-  office: { preset: "office", label: "Escritório", exponent: 3.4, shadowing: 6 },
-  dense: { preset: "dense", label: "Prédio denso", exponent: 3.8, shadowing: 7 },
+  open: { preset: "open", label: "Open space", exponent: 2.2, shadowing: 3 },
+  residential: { preset: "residential", label: "Residential", exponent: 3.0, shadowing: 5 },
+  office: { preset: "office", label: "Office", exponent: 3.4, shadowing: 6 },
+  dense: { preset: "dense", label: "Dense building", exponent: 3.8, shadowing: 7 },
 };
 
 export const ENV_ORDER: EnvironmentPreset[] = ["open", "residential", "office", "dense"];
@@ -136,11 +136,11 @@ export function signalQuality(rssi: number, snr: number | null = null): number {
 }
 
 export function rssiLabel(rssi: number): string {
-  if (rssi >= -55) return "excelente";
-  if (rssi >= -67) return "bom";
-  if (rssi >= -75) return "razoável";
-  if (rssi >= -82) return "fraco";
-  return "crítico";
+  if (rssi >= -55) return "excellent";
+  if (rssi >= -67) return "good";
+  if (rssi >= -75) return "fair";
+  if (rssi >= -82) return "weak";
+  return "critical";
 }
 
 /** 1-D Kalman filter tuned for RSSI jitter. */

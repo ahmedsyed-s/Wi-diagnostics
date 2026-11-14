@@ -47,7 +47,7 @@ export class SyslogListener {
     if (kind === "wan-up" && this.downSince !== null) {
       const secs = Math.round((Date.now() - this.downSince) / 1000);
       this.downSince = null;
-      this.emit("good", "wan-up", `WAN restabelecida após ${secs}s (${from})`);
+      this.emit("good", "wan-up", `WAN restored after ${secs}s (${from})`);
       return;
     }
     this.emit(level, kind, `${from}: ${text}`);
