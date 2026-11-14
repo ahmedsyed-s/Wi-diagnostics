@@ -6,8 +6,8 @@
  *   /api/snapshot, /api/networks.csv, POST /api/report?format=pdf|word|excel|all
  */
 
-import { existsSync, statSync } from "node:fs";
-import { join, normalize, resolve, sep } from "node:path";
+import { existsSync, readFileSync, statSync } from "node:fs";
+import { extname, join, normalize, resolve, sep } from "node:path";
 import type { ServerWebSocket } from "bun";
 import type { WiEngine } from "../engine/engine";
 import type { EnvironmentPreset } from "../engine/types";
@@ -27,6 +27,30 @@ function safeFile(base: string, rel: string): string | null {
   const path = resolve(base, normalize(decoded).replace(/^([/\\])+/, ""));
   if (path !== base && !path.startsWith(base + sep)) return null;
   return existsSync(path) && statSync(path).isFile() ? path : null;
+}
+
+const MIME: Record<string, string> = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".ico": "image/x-icon",
+  ".woff2": "font/woff2",
+  ".wasm": "application/wasm",
+};
+
+/**
+ * Serves a static file from memory with an explicit Content-Type. Streaming
+ * `Bun.file()` straight into the response can stall on Windows for the larger
+ * three.js modules, which leaves the browser's module graph pending forever and the
+ * page stuck on the boot screen. Reading the bytes first avoids that path entirely.
+ */
+function staticResponse(path: string, headers: Record<string, string> = {}): Response {
+  const type = MIME[extname(path).toLowerCase()] ?? "application/octet-stream";
+  return new Response(readFileSync(path), { headers: { "Content-Type": type, ...headers } });
 }
 
 /** True when `origin` is http://<one of hosts>:<port>. */
@@ -50,6 +74,9 @@ export function startServer(engine: WiEngine, opts: { port?: number; host?: stri
   const clients = new Set<ServerWebSocket<unknown>>();
   let lastPayload = "";
   const allowedHosts = new Set(["127.0.0.1", "localhost", host]);
+  if (!existsSync(join(THREE, "build", "three.module.js"))) {
+    console.warn(`three.js not found in ${THREE}. Run \`npm install\` (or \`bun install\`) in the project folder, or the 3D view will not load.`);
+  }
 
   const server = Bun.serve({
     hostname: host,
@@ -92,11 +119,11 @@ export function startServer(engine: WiEngine, opts: { port?: number; host?: stri
 
       if (path.startsWith("/vendor/three/")) {
         const file = safeFile(THREE, path.slice("/vendor/three/".length));
-        return file ? new Response(Bun.file(file)) : new Response("Not found", { status: 404 });
+        return file ? staticResponse(file, { "Cache-Control": "max-age=3600" }) : new Response("Not found", { status: 404 });
       }
 
       const file = safeFile(WEB, path === "/" ? "index.html" : path);
-      if (file) return new Response(Bun.file(file), { headers: { "Cache-Control": "no-cache" } });
+      if (file) return staticResponse(file, { "Cache-Control": "no-cache" });
       return new Response("Not found", { status: 404 });
     },
 

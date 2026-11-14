@@ -127,6 +127,14 @@ kbd {
   letter-spacing: 0.08em;
 }
 
+.boot-sub.boot-error {
+  color: #ff5c7a;
+  max-width: min(640px, 90vw);
+  margin-left: auto;
+  margin-right: auto;
+  word-break: break-word;
+}
+
 .boot-bar {
   width: 260px;
   height: 2px;
